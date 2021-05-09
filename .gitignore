@@ -1,4 +1,14 @@
+# apps
 rhasspy/profiles/en/*
 !**/profile.json
 !**/sentences.ini
 !**/docker-compose.yml
+
+# Home Assistant config
+www
+blueprints
+.storage
+secrets.yaml
+*.db*
+.HA*
+*.log

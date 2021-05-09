@@ -1,0 +1,102 @@
+# Configure a default setup of Home Assistant (frontend, api, etc)
+default_config:
+
+# Text to speech
+tts:
+  - platform: google_translate
+
+group: !include groups.yaml
+automation: !include automations.yaml
+script: !include scripts.yaml
+scene: !include scenes.yaml
+
+stream:
+camera:
+  - platform: generic
+    still_image_url: !secret garaz_url
+    stream_source: !secret garaz_stream
+    name: garaz
+    verify_ssl: false
+    authentication: basic
+  - platform: generic
+    still_image_url: !secret przod_url
+    stream_source: !secret przod_stream
+    name: przod
+    verify_ssl: false
+    authentication: basic
+  - platform: generic
+    still_image_url: !secret brama_url
+    stream_source: !secret brama_stream
+    name: brama
+    verify_ssl: false
+    authentication: basic
+  - platform: generic
+    still_image_url: !secret taras_url
+    stream_source: !secret taras_stream
+    name: taras
+    verify_ssl: false
+    authentication: basic
+image_processing:
+  - platform: doods
+    url: "http://192.168.1.222:8080"
+    timeout: 60
+    detector: tensorflow
+    source:
+      - entity_id: camera.garaz
+      - entity_id: camera.przod
+      - entity_id: camera.brama
+      - entity_id: camera.taras
+    file_out:
+      - "/media/{{ camera_entity.split('.')[1] }}.jpg"
+    # confidence: 50
+
+intent:
+intent_script:
+  GetObjectsInFront:
+    speech:
+      text: I see {{state_attr('image_processing.doods_przod', 'summary')|to_json|replace('{','')|replace('}','')|regex_replace(find='^$', replace='nothing')}} in front of the house
+
+  GetObjectsInBack:
+    speech:
+      text: I see {{state_attr('image_processing.doods_taras', 'summary')|to_json|replace('{','')|replace('}','')|regex_replace(find='^$', replace='nothing')}} in the back of the house
+
+  GetObjectsInGate:
+    speech:
+      text: I see {{state_attr('image_processing.doods_taras', 'summary')|to_json|replace('{','')|replace('}','')|regex_replace(find='^$', replace='nothing')}} by the gate
+
+  GetObjectsBehindGarage:
+    speech:
+      text: I see {{state_attr('image_processing.doods_taras', 'summary')|to_json|replace('{','')|replace('}','')|regex_replace(find='^$', replace='nothing')}} behind garage
+
+  FindDog:
+    speech:
+      text: >
+        {% if 'dog' in state_attr('image_processing.doods_przod', 'summary') %}
+          The dog is in front the house
+        {% elif 'dog' in state_attr('image_processing.doods_taras', 'summary') %}
+          The dog is in the back of the house
+        {% elif 'dog' in state_attr('image_processing.doods_brama', 'summary') %}
+          The dog is by the gate
+        {% elif 'dog' in state_attr('image_processing.doods_taras', 'summary') %}
+          The dog is behind the garage
+        {% else %}
+          I don't see the dog anywhere
+        {% endif %}
+
+  FindPeople:
+    speech:
+      text: >
+        {% set found = [] %}
+        {% if 'person' in state_attr('image_processing.doods_przod', 'summary') %}
+          {% set found = found + ['in front of the house'] %}
+        {% endif %}
+        {% if 'person' in state_attr('image_processing.doods_taras', 'summary') %}
+          {% set found = found + ['in the back of the house'] %}
+        {% endif %}
+        {% if 'person' in state_attr('image_processing.doods_brama', 'summary') %}
+          {% set found = found + ['by the gate'] %}
+        {% endif %}
+        {% if 'person' in state_attr('image_processing.doods_taras', 'summary') %}
+          {% set found = found + ['behind the garage'] %}
+        {% endif %}
+        {{'I see people ' + found | join(' and ') if found else "I don't see anyone"}}
