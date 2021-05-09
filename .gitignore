@@ -1,1 +1,4 @@
-rhasspy/profiles/*
+rhasspy/profiles/en/*
+!**/profile.json
+!**/sentences.ini
+!**/docker-compose.yml

@@ -1,0 +1,47 @@
+{
+    "dialogue": {
+        "satellite_site_ids": "app",
+        "system": "rhasspy"
+    },
+    "handle": {
+        "satellite_site_ids": "app",
+        "system": "hass"
+    },
+    "home_assistant": {
+        "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJiYzgxNDQ5NDM3OTk0Zjg1OWYwNDBhNmYwOTUyNGUwOCIsImlhdCI6MTYyMDQ4Mzg5NSwiZXhwIjoxOTM1ODQzODk1fQ.RaCdvx8djQHQ3ghPRCmZ8gcEdh6myxpWdbU2WiuqF8o",
+        "url": "http://192.168.122.90:8123"
+    },
+    "intent": {
+        "satellite_site_ids": "app",
+        "system": "fsticuffs"
+    },
+    "microphone": {
+        "pyaudio": {
+            "device": "22"
+        }
+    },
+    "mqtt": {
+        "enabled": "true",
+        "host": "mosquitto",
+        "password": "P@ssw0rd",
+        "username": "marcin"
+    },
+    "sounds": {
+        "aplay": {
+            "device": "sysdefault:CARD=PCH"
+        }
+    },
+    "speech_to_text": {
+        "satellite_site_ids": "app",
+        "system": "kaldi"
+    },
+    "text_to_speech": {
+        "satellite_site_ids": "app",
+        "system": "nanotts"
+    },
+    "wake": {
+        "porcupine": {
+            "keyword_path": "computer_linux.ppn"
+        }
+    }
+}
