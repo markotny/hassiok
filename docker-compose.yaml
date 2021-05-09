@@ -1,0 +1,35 @@
+version: '3.7'
+
+services:
+  doods:
+    image: snowzach/doods:amd64
+    container_name: doods
+    restart: unless-stopped
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ./doods/config.yaml:/opt/doods/config.yaml
+    ports:
+      - "8080:8080"
+  
+  rhasspy:
+    image: rhasspy/rhasspy
+    container_name: rhasspy
+    restart: unless-stopped
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ./rhasspy/profiles:/profiles
+    ports:
+      - 12101:12101
+    devices:
+      - /dev/snd:/dev/snd
+    command: --user-profiles /profiles --profile en
+
+  mosquitto:
+    image: eclipse-mosquitto
+    container_name: mosquitto
+    expose:
+      - "1883"
+    ports:
+      - "1883:1883"
+    volumes:
+      - ./mosquitto:/mosquitto/config
